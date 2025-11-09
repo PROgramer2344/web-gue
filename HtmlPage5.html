@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Belajar Mengetik Dua Tangan</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(to right, #74ebd5, #ACB6E5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        #text-display {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 700px;
+            font-size: 20px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+            #text-display span.correct {
+                color: green;
+            }
+
+            #text-display span.incorrect {
+                color: red;
+                text-decoration: underline;
+            }
+
+        textarea {
+            width: 80%;
+            max-width: 700px;
+            height: 120px;
+            font-size: 18px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            padding: 10px;
+            box-sizing: border-box;
+            resize: none;
+            outline: none;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #4A90E2;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #357ABD;
+            }
+
+        #info {
+            margin-top: 15px;
+            font-size: 18px;
+        }
+
+        .highlight {
+            background-color: #dff9fb;
+            border-radius: 4px;
+            padding: 2px 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>⌨️ Belajar Mengetik Dua Tangan</h1>
+    <div id="text-display"></div>
+    <textarea id="text-input" placeholder="Mulai mengetik di sini..." disabled></textarea>
+    <button id="start-btn">Mulai Latihan</button>
+    <div id="info"></div>
+
+    <script>const sentences = [
+      "Aku suka belajar mengetik dengan sepuluh jari.",
+      "Ketik cepat bukan berarti asal-asalan.",
+      "Latihan setiap hari akan membuatmu mahir.",
+      "Gunakan jari kiri untuk huruf di sebelah kiri.",
+      "Gunakan jari kanan untuk huruf di sebelah kanan."
+    ];
+
+    const textDisplay = document.getElementById("text-display");
+    const textInput = document.getElementById("text-input");
+    const startBtn = document.getElementById("start-btn");
+    const info = document.getElementById("info");
+
+    let currentSentence = "";
+    let startTime;
+
+    startBtn.addEventListener("click", startGame);
+
+    function startGame() {
+      currentSentence = sentences[Math.floor(Math.random() * sentences.length)];
+      textDisplay.innerHTML = currentSentence
+        .split("")
+        .map((char) => `<span>${char}</span>`)
+        .join("");
+
+      textInput.value = "";
+      textInput.disabled = false;
+      textInput.focus();
+      info.textContent = "";
+      startTime = new Date();
+    }
+
+    textInput.addEventListener("input", () => {
+      const arraySentence = textDisplay.querySelectorAll("span");
+      const arrayValue = textInput.value.split("");
+
+      let correct = true;
+      arraySentence.forEach((charSpan, index) => {
+        const char = arrayValue[index];
+        if (char == null) {
+          charSpan.classList.remove("correct", "incorrect");
+          correct = false;
+        } else if (char === charSpan.textContent) {
+          charSpan.classList.add("correct");
+          charSpan.classList.remove("incorrect");
+        } else {
+          charSpan.classList.add("incorrect");
+          charSpan.classList.remove("correct");
+          correct = false;
+        }
+      });
+
+      if (correct && textInput.value.length === currentSentence.length) {
+        const endTime = new Date();
+        const timeTaken = (endTime - startTime) / 1000;
+        const words = currentSentence.split(" ").length;
+        const wpm = Math.round((words / timeTaken) * 60);
+        info.innerHTML = `✅ Selesai! Waktu: <b>${timeTaken.toFixed(2)}s</b> | Kecepatan: <b>${wpm} WPM</b>`;
+        textInput.disabled = true;
+      }
+    });</script>
+</body>
+</html>
